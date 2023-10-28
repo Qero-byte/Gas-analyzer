@@ -47,7 +47,7 @@ void loop() {
   } else if (data >= warning_level && data < danger_level) {
     lcd.clear();                           //Очищаем дисплей
     lcd.setCursor(0, 0);                   //Устанавливаем курсор в точку 0, 0
-    lcd.print("Control");                  //Выводим OK
+    lcd.print("Control");                  //Выводим Control
     if (control != 100) {                   //Условие для включения пищалки на 100 тактов
       digitalWrite(13, HIGH);              //Включаем пищалку
       control++;                           //Увеличиваем переменную счетчик на 1
