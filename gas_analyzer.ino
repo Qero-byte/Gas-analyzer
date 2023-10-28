@@ -17,6 +17,7 @@ const long danger_level = 1000;
 int control = 0;                           //Переменная для единократного звука при некритическом превышении порога
 unsigned int myTimer;                      //Переменная таймера для работы с millis()
 bool flag = true;                          //Флаг для переключения пищалки
+String str_buffer, str;
 
 //Различные обьявления и установки
 LiquidCrystal_I2C lcd(0x27,16,2);          //Обьявление дисплея по адрессу 0x27 с 2 строками и 16 столбцами
@@ -39,16 +40,12 @@ void loop() {
    */
   if (data < warning_level) { 
     control = 0;                           //Сброс переменной control для правильной работы условия
-    lcd.clear();                           //Очищаем дисплей
-    lcd.setCursor(0, 0);                   //Устанавливаем курсор в точку 0, 0
-    lcd.print("OK");                       //Выводим OK
+    str = "OK";                            //Выводим OK
     digitalWrite(13, LOW);                 //Отключаем пищалку
     green();
   } else if (data >= warning_level && data < danger_level) {
-    lcd.clear();                           //Очищаем дисплей
-    lcd.setCursor(0, 0);                   //Устанавливаем курсор в точку 0, 0
-    lcd.print("Control");                  //Выводим Control
-    if (control != 100) {                   //Условие для включения пищалки на 100 тактов
+    str = "Control";                       //Выводим Control
+    if (control != 100) {                  //Условие для включения пищалки на 100 тактов
       digitalWrite(13, HIGH);              //Включаем пищалку
       control++;                           //Увеличиваем переменную счетчик на 1
     } else {
@@ -57,15 +54,18 @@ void loop() {
     yellow();
   } else if (data >= danger_level) {
     control = 0;                           //Сброс переменной control для правильной работы условия
-    lcd.clear();                           //Очищаем дисплей
-    lcd.setCursor(0, 0);                   //Устанавливаем курсор в точку 0, 0
-    lcd.print("Critical");                 //Выводим Critical
+    str = "Critical";                      //Выводим Critical
     if (millis() - myTimer >= 500) {       //Таймер на 500 мс (2 раза в сек)
       myTimer = millis();                  //Сброс таймера
       digitalWrite(13, flag);              //Включаем пищалку
       flag = !flag;
     }
     red();
+  }
+ if (str_buffer != str) {
+    lcd.clear();
+    lcd.print(str);
+    str_buffer = str;
   }
 }
 
